@@ -609,7 +609,7 @@ def main(translations_dir=None, output_dir=None) -> None:
     flags = parser.parse_args()
     translations_dir = flags.translations
     output_dir = flags.output
-    language_code_filter = flags.language
+    language_code_filter = flags.language.upper() if not flags.language == None else None
 
     if language_code_filter:
       print("===================================================")
