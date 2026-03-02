@@ -597,16 +597,24 @@ def _write_file(path: str, lines: List[str]) -> None:
 # Main
 # ---------------------------------------------------------------------------
 
-def main(translations_dir=None, output_dir=None, argv=None) -> None:
+def main(
+    translations_dir: Optional[str] = None,
+    output_dir: Optional[str] = None,
+    argv: Optional[List[str]] = None,
+) -> None:
     # Setup argparse
     parser = argparse.ArgumentParser(description="18n flags")
     parser.add_argument("-l", "--language", type=str, help="Filter terminal logs by language code. Ex. -l=UK shows only logs related to the Ukrainian translation")
     parser.add_argument("-t", "--translations", type=str, default="lib/I18n/translations", help="Default translation dir path relative to project root")
     parser.add_argument("-o", "--output", type=str, default="lib/I18n/", help="Default output dir path relative to project root")
     
-    flags, _unknown = parser.parse_known_args(argv)
-    translations_dir = flags.translations
-    output_dir = flags.output
+    argv = [] if argv is None else argv
+    flags, unknown = parser.parse_known_args(argv)
+    if unknown:
+        parser.error(f"unrecognized arguments: {' '.join(unknown)}")
+
+    translations_dir = translations_dir or flags.translations
+    output_dir = output_dir or flags.output
     language_code_filter = flags.language.upper() if flags.language is not None else None
 
     if language_code_filter:
